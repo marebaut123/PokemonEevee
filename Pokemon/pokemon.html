@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.cdnfonts.com/css/shantell-sans" rel="stylesheet">
+    <title>Eevee</title>
+    <style>
+        body {
+            background-color: rgb(236, 163, 78);
+        }
+        .pokeimg1 {
+            position: absolute;
+            color: rgb(0, 0, 0);
+            font-family: "Shantell Sans', sans-serif; color: black";
+            
+        }
+        button {
+            width: 50px;
+            height: 50px;
+            background-color: rgb(255, 166, 0);
+            border-color: rgb(0, 0, 0);
+            border-radius: 50px;
+            position: absolute;
+            left: 60px;
+            top: 406px;
+            margin: 5px;
+            text-transform: uppercase;
+        }
+        .placeholder {
+            width: 120px;
+            height: 60px;
+            position: absolute;
+            top: 475px;
+            left: 115px;
+            font-size: 25px;
+            font-family: "font-family: 'Shantell Sans', sans-serif; color: white";
+            border-radius: 8px;
+            background-color: transparent;
+            text-align: center;
+            text-shadow: 1px;
+        }
+        .pokeImg {
+            width: 140px;
+            height: 150px;
+            position: absolute;
+            top: 190px;
+            left: 140px;
+        }
+        .pokeimg {
+            width: 140px;
+            height: 150px;
+            position: absolute;
+            top: 190px;
+            left: 140px;
+        }
+        .grafica {
+            position: absolute;
+            width: 20%;
+            left: 480px;
+            top: 190px;
+        }
+    </style>
+</head>
+<body class="back">
+    <img src="img/POKEDEX.PNG.png" alt="pokedex" width="800px">
+    <input type="text" placeholder="Eevee" id="pokeName" class="placeholder">
+    <img src="img/pokebola.PNG.jpeg" alt="pokeBola" id="pokeimg" width="1px" class="pokeimg">
+
+    <div id="pokename" class="pokeimg1" style="left: 830px; top: 200px; font-size: 20px; color: rgb(7, 7, 10);">Audino</div>
+    <div id="pokeHe" class="pokeimg1" style="left: 830px; top: 240px; font-size: 20px; color: rgb(234, 245, 245);">Peso</div>
+    <div id="pokeWe" class="pokeimg1" style="left: 830px; top: 280px; font-size: 20px; color: rgb(55, 47, 85)6;">Altura</div>
+    <div id="poketype" class="pokeimg1" style="left: 830px; top: 320px; font-size: 20px; color: rgb(66, 194, 194);">Tipo</div>
+    <div id="pokeitem" class="pokeimg1" style="left: 830px; top: 360px; font-size: 20px; color: rgb(99, 112, 131);">Item</div>
+    <div id="pokemove1" class="pokeimg1" style="left: 830px; top: 400px; font-size: 20px; color: rgb(9, 255, 99);">Movimiento1</div>
+    <div id="pokemove2" class="pokeimg1" style="left: 830px; top: 440px; font-size: 20px; color: rgb(119, 18, 252);">Movimiento2</div>
+    <div id="pokemove3" class="pokeimg1" style="left: 830px; top: 480px; font-size: 20px; color: rgb(53, 1, 30);">Movimiento3</div>
+    <div id="pokemove4" class="pokeimg1" style="left: 830px; top: 520px; font-size: 20px;color: rgb(255, 255, 255);">Movimiento4</div>
+
+    <button onclick="fetchPokemon()" class="button"><img src="img/pokebola.PNG.jpeg"
+         style="height: 70%; width: 70%;"></button>
+
+    <div class="grafica">
+        <canvas id="miCanvas"></canvas>
+    </div>
+  
+    <script>
+        const fetchPokemon = () => {
+            const pokeNameInput = document.getElementById("pokeName");
+            let pokeName = pokeNameInput.value;
+            pokeName = pokeName.toLowerCase();
+            const url = `https://pokeapi.co/api/v2/pokemon/${pokeName}`;
+
+            fetch(url).then((res) => {
+                if (res.status != "200") {
+                    console.log(res);
+                    pokeImage("D:\\Servidor\\img\\Eevee.png");
+                } else {
+                    return res.json();
+                }
+            }).then((data) => {
+                if (data) {
+                    console.log(data);
+                    let pokeImg = data.sprites.front_default;
+                    pokeImage(pokeImg);
+
+                    document.getElementById('pokename').innerHTML = `Name: ${data.name}`;
+                    document.getElementById('pokeHe').innerHTML =` Height: ${data.height}`;
+                    document.getElementById('pokeWe').innerHTML = `Weight: ${data.weight}`;
+                    document.getElementById('pokeitem').innerHTML = `Ability: ${data.abilities[0].ability.name}`;
+                    document.getElementById('poketype').innerHTML = `Type: ${data.types[0].type.name}`;
+
+                    document.getElementById('pokemove1').innerHTML = `Move 1: ${data.moves[0].move.name}`;
+                    document.getElementById('pokemove2').innerHTML = `Move 2: ${data.moves[1].move.name}`;
+                    document.getElementById('pokemove3').innerHTML = `Move 3: ${data.moves[2].move.name}`;
+                    document.getElementById('pokemove4').innerHTML = `Move 4: ${data.moves[3].move.name}`;
+
+                    const miCanvas = document.getElementById("miCanvas").getContext("2d");
+                    if (window.miCanva != undefined) {
+                        window.miCanva.destroy();
+                    }
+                    window.miCanva = new Chart(miCanvas, {
+                        type: "bar",
+                        data: {
+                            labels: ["HP", "Attack", "Defense", "Special-A", "Special-D", "Speed"],
+                            datasets: [{
+                                label: `${data.name} Stats`,
+                                data: [
+                                    data.stats[0].base_stat,
+                                    data.stats[1].base_stat,
+                                    data.stats[2].base_stat,
+                                    data.stats[3].base_stat,
+                                    data.stats[4].base_stat,
+                                    data.stats[5].base_stat
+                                ],
+                                borderColor: [
+                                    'rgba(255,99,132,1)',
+                                    'rgba(54,162,235,1)',
+                                    'rgba(255,206,86,1)',
+                                    'rgba(75,192,192,1)',
+                                    'rgba(153,102,255,1)',
+                                    'rgba(255,159,64,1)'
+                                ],
+                                backgroundColor: [
+                                    'rgba(255,99,132,0.5)',
+                                    'rgba(54,162,235,0.5)',
+                                    'rgba(255,206,86,0.5)',
+                                    'rgba(75,192,192,0.5)',
+                                    'rgba(153,102,255,0.5)',
+                                    'rgba(255,159,64,0.5)'
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                x: {
+                                    ticks: {
+                                        maxRotation: 90,
+                                        minRotation: 90,
+                                        color: 'white',
+                                        font: { size: 15 }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+            });
+        }
+
+        const pokeImage = (url) => {
+            const pokePhoto = document.getElementById("pokeimg");
+            pokePhoto.src = url;
+        }  
+
+    </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</body>
+</html>
